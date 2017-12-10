@@ -1,6 +1,7 @@
 (ns clj-jwt.sign
   (:require
     [clj-jwt.base64  :refer [url-safe-encode-str url-safe-decode]]
+    [clj-jwt.format  :refer [der->jose]]
     [crypto.equality :refer [eq?]]))
 
 ; HMAC
@@ -37,13 +38,6 @@
 
 ; ECDSA
 (defn- ec-sign
-  [alg key body & {:keys [charset] :or {charset "UTF-8"}}]
-  (let [sig (doto (java.security.Signature/getInstance alg)
-                  (.initSign key)
-                  (.update (.getBytes body charset)))]
-    (url-safe-encode-str (.sign sig))))
-
-(defn- ec-sign-test
   [alg key-size key body & {:keys [charset] :or {charset "UTF-8"}}]
   (let [sig (doto (java.security.Signature/getInstance alg)
                   (.initSign key)
